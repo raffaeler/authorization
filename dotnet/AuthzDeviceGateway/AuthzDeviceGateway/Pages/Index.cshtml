@@ -1,0 +1,15 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+
+    var name = User.Identity?.Name;
+    var nameClaimType = (User.Identity as System.Security.Claims.ClaimsIdentity)?.NameClaimType;
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+
+
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
