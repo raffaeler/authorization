@@ -69,10 +69,16 @@ public class Program
             OnRedirectToIdentityProvider = ctx =>
             {
                 // specify additional parameters here
-                if (ctx.HttpContext.Items.TryGetValue("acr", out object? value))
+                if (ctx.HttpContext.Items.TryGetValue("acr", out object? acrValue))
                 {
-                    var acr = value as string ?? string.Empty;  // "mfa"
+                    var acr = acrValue as string ?? string.Empty;  // "mfa"
                     ctx.ProtocolMessage.SetParameter("acr_values", acr);
+                }
+
+                if (ctx.HttpContext.Items.TryGetValue("scopes", out object? scopesValue))
+                {
+                    var scopes = scopesValue as string[] ?? Array.Empty<string>();
+                    ctx.ProtocolMessage.Scope += " " + string.Join(" ", scopes);
                 }
 
                 return Task.CompletedTask;
