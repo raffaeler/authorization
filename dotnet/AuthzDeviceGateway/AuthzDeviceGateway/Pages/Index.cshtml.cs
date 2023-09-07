@@ -1,3 +1,7 @@
+using AuthzDeviceGateway.Authorization;
+using AuthzDeviceGateway.Data;
+using AuthzDeviceGateway.Models;
+
 using CommonAuth;
 
 using Microsoft.AspNetCore.Authorization;
@@ -11,20 +15,24 @@ public class IndexModel : PageModel
 {
     private readonly ILogger<IndexModel> _logger;
     private readonly IAuthorizationService _authorizationService;
+    private readonly IRepository _repository;
     private readonly AuthServerConfiguration _authServerConfiguration;
 
     public IndexModel(ILogger<IndexModel> logger,
         IAuthorizationService authorizationService,
-        IOptions<AuthServerConfiguration> authServerConfigurationOption)
+        IOptions<AuthServerConfiguration> authServerConfigurationOption,
+        IRepository repository)
     {
         _logger = logger;
         _authorizationService = authorizationService;
+        _repository = repository;
         _authServerConfiguration = authServerConfigurationOption.Value;
     }
 
-    //public void OnGet()
-    //{
-    //}
+    public ICollection<DeviceObject> GetDevices()
+    {
+        return _repository.DeviceObjects;
+    }
 
     public void OnGetAsync()
     {

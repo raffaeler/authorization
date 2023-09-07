@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace AuthzDeviceGateway.Policies;
+namespace AuthzDeviceGateway.Authorization;
 
 /// <summary>
 /// Represent the OTP requirement

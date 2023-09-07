@@ -1,4 +1,4 @@
-﻿using AuthzDeviceGateway.Policies;
+﻿using AuthzDeviceGateway.Authorization;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AuthzDeviceGateway.Policies;
+namespace AuthzDeviceGateway.Authorization;
 
 /// <summary>
 /// This is the handler for the OtpRequirement

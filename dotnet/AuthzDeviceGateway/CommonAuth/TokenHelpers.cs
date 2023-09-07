@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -29,6 +30,20 @@ public static class TokenHelpers
         var jsonHeader = Prettify(jwt.Header?.SerializeToJson());
         var jsonPayload = Prettify(jwt.Payload?.SerializeToJson());
         return (jsonHeader, jsonPayload);
+    }
+
+    public static async Task<string[]> GetScopesFromAccessToken(HttpContext context)
+    {
+        var token = await context.GetTokenAsync("access_token");
+        var handler = new JwtSecurityTokenHandler();
+        var jwt = handler.ReadJwtToken(token);
+        var scopeClaim = jwt.Claims
+            .FirstOrDefault(c => c.Type == "scope" && c.ValueType == ClaimValueTypes.String);
+        if (scopeClaim == null) return Array.Empty<string>();
+
+        return scopeClaim.Value.Split(' ',
+            StringSplitOptions.RemoveEmptyEntries |
+            StringSplitOptions.TrimEntries).ToArray();
     }
 
     public static string GetTokenText(string token)
