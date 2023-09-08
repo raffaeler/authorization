@@ -46,3 +46,11 @@ body {
 .c3 {
     grid-column: 3;
 }
+
+.markdown {
+    border-width: 2px;
+    margin: 30px;
+    border-color: navy;
+    border: outset;
+    padding: 7px;
+}

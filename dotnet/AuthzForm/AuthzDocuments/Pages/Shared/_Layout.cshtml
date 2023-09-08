@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/AuthzDocuments.styles.css" asp-append-version="true" />
+
+    <link href="/_content/PSC.Blazor.Components.MarkdownEditor/css/easymde.min.css" rel="stylesheet" />
+    <link href="_content/Tavenem.Blazor.MarkdownEditor/styles.css" rel="stylesheet" />
 </head>
 <body>
     <header>
@@ -51,6 +54,10 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script src="_framework/blazor.server.js"></script>
+    <script src="/_content/PSC.Blazor.Components.MarkdownEditor/js/easymde.min.js"></script>
+    <script src="/_content/PSC.Blazor.Components.MarkdownEditor/js/markdownEditor.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

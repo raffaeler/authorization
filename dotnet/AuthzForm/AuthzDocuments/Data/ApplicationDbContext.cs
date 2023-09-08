@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using AuthzDocuments.Models;
 
 namespace AuthzDocuments.Data
 {
@@ -9,5 +10,6 @@ namespace AuthzDocuments.Data
             : base(options)
         {
         }
+        public DbSet<AuthzDocuments.Models.Document> Document { get; set; } = default!;
     }
 }

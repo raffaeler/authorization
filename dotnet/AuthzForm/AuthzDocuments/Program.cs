@@ -1,5 +1,6 @@
 using System.Security.Claims;
 
+using AuthzDocuments.Authorization.Handlers;
 using AuthzDocuments.Authorization.Transform;
 using AuthzDocuments.Data;
 
@@ -34,6 +35,9 @@ public class Program
             .AddEntityFrameworkStores<ApplicationDbContext>();
         builder.Services.AddRazorPages();
 
+        //builder.Services.AddServerSideBlazor();
+        builder.Services.AddMarkdownEditor();
+
         builder.Services.Configure<CookiePolicyOptions>(options =>
         {
             // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -43,31 +47,12 @@ public class Program
 
         builder.Services.AddAuthorization(options =>
         {
-            //// frites = france + italy + spain
-            //options.AddPolicy(MyPolicies.EconomicFrites, builder =>
-            //    builder.RequireClaim(ClaimTypes.Country, "Italy", "France", "Spain"));
-
-            //options.AddPolicy(MyPolicies.TechStaff, builder =>
-            //{
-            //    builder.Requirements.Add(new TechStaffRequirement());
-            //});
-
-            //options.AddPolicy(MyPolicies.SeniorTechStaff, builder =>
-            //{
-            //    // requirements are computed in AND
-            //    builder.Requirements.Add(new TechStaffRequirement());
-            //    builder.Requirements.Add(new SeniorRequirement(10));
-
-            //    // this policy will need **both** technical and senior requirements
-            //    // but the User may just be **either** a developer **or** an itpro
-            //});
+            options.AddPolicy("Documents", policy => policy.RequireClaim("Documents"));
         });
 
         // Forgetting to add these handlers will make the authorization fail
-        //builder.Services.AddSingleton<IAuthorizationHandler, DeveloperRequirementHandler>();
-        //builder.Services.AddSingleton<IAuthorizationHandler, ItproRequirementHandler>();
-        //builder.Services.AddSingleton<IAuthorizationHandler, SeniorRequirementHandler>();
-        //builder.Services.AddSingleton<IAuthorizationHandler, SportRequirementHandler>();
+        builder.Services.AddSingleton<IAuthorizationHandler, DocumentAuthorizationHandler>();
+        builder.Services.AddSingleton<IAuthorizationHandler, AuthorAuthorizationHandler>();
 
         builder.Services.AddSingleton<IClaimsTransformation, CustomClaimTransformer>();
 
@@ -96,6 +81,7 @@ public class Program
         app.UseAuthorization();
 
         app.MapRazorPages();
+        //app.MapBlazorHub();
 
         app.Run();
     }

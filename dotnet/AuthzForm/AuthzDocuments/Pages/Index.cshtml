@@ -1,10 +1,90 @@
 ﻿@page
-@model IndexModel
+@using AuthzDocuments.Authorization;
+@using AuthzDocuments.Models;
+@using Microsoft.AspNetCore.Authorization;
+
+@model AuthzDocuments.Pages.IndexModel
+
+@inject IAuthorizationService AuthorizationService
+
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Index";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h1>Index</h1>
+
+<p>
+    @if ((await AuthorizationService.AuthorizeAsync(
+    User, Document.Empty, Operations.Create)).Succeeded)
+    {
+        <a asp-page="Create">Create New</a>
+    }
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Document[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Document[0].Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Document[0].Pathname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Document[0].Author)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Document)
+        {
+            var canUpdate = (await AuthorizationService.AuthorizeAsync(
+                User, item, Operations.Update)).Succeeded;
+            var canRead = (await AuthorizationService.AuthorizeAsync(
+                User, item, Operations.Read)).Succeeded;
+            var canDelete = (await AuthorizationService.AuthorizeAsync(
+                User, item, Operations.Delete)).Succeeded;
+
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Pathname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Author)
+                </td>
+                <td>
+                    @if (canUpdate)
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        if(canRead || canDelete)
+                        {
+                            <span>|</span>
+                        }
+                    }
+                    @if (canRead)
+                    {
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                        if(canDelete)
+                        {
+                            <span>|</span>
+                        }
+                    }
+                    @if (canDelete)
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    }
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
