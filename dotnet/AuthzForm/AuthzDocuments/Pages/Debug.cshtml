@@ -1,0 +1,28 @@
+﻿@page
+@model AuthzDocuments.Pages.DebugModel
+@{
+    var isAuthenticated = User.Identity?.IsAuthenticated ?? false;
+    var userName = User.Identity?.Name ?? "guest";
+    var claims = User.Claims;
+}
+
+<h2>Debug</h2>
+<p>Username: @userName</p>
+
+@{
+    if (isAuthenticated)
+    {
+        <div class='gr'>
+            <div class="c1"><span>Claim Name</span></div>
+            <div class="c2"><span>Value Type</span></div>
+            <div class="c3"><span>Value</span></div>
+            @foreach (var claim in claims)
+            {
+                <div class="c1"><span>@claim.Type</span></div>
+                <div class="c2"><span>@claim.ValueType</span></div>
+                <div class="c3"><span>@claim.Value</span></div>
+            }
+        </div>
+    }
+
+}
