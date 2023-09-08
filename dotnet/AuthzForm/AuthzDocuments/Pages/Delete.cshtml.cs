@@ -8,56 +8,55 @@ using Microsoft.EntityFrameworkCore;
 using AuthzDocuments.Data;
 using AuthzDocuments.Models;
 
-namespace AuthzDocuments.Pages
+namespace AuthzDocuments.Pages;
+
+public class DeleteModel : PageModel
 {
-    public class DeleteModel : PageModel
+    private readonly AuthzDocuments.Data.ApplicationDbContext _context;
+
+    public DeleteModel(AuthzDocuments.Data.ApplicationDbContext context)
     {
-        private readonly AuthzDocuments.Data.ApplicationDbContext _context;
+        _context = context;
+    }
 
-        public DeleteModel(AuthzDocuments.Data.ApplicationDbContext context)
+    [BindProperty]
+    public Document Document { get; set; } = default!;
+
+    public async Task<IActionResult> OnGetAsync(Guid? id)
+    {
+        if (id == null)
         {
-            _context = context;
+            return NotFound();
         }
 
-        [BindProperty]
-        public Document Document { get; set; } = default!;
+        var document = await _context.Document.FirstOrDefaultAsync(m => m.Id == id);
 
-        public async Task<IActionResult> OnGetAsync(Guid? id)
+        if (document == null)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            return NotFound();
+        }
+        else
+        {
+            Document = document;
+        }
+        return Page();
+    }
 
-            var document = await _context.Document.FirstOrDefaultAsync(m => m.Id == id);
-
-            if (document == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                Document = document;
-            }
-            return Page();
+    public async Task<IActionResult> OnPostAsync(Guid? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
         }
 
-        public async Task<IActionResult> OnPostAsync(Guid? id)
+        var document = await _context.Document.FindAsync(id);
+        if (document != null)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var document = await _context.Document.FindAsync(id);
-            if (document != null)
-            {
-                Document = document;
-                _context.Document.Remove(Document);
-                await _context.SaveChangesAsync();
-            }
-
-            return RedirectToPage("./Index");
+            Document = document;
+            _context.Document.Remove(Document);
+            await _context.SaveChangesAsync();
         }
+
+        return RedirectToPage("./Index");
     }
 }

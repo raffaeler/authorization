@@ -33,10 +33,10 @@ public class Program
         builder.Services.AddDefaultIdentity<IdentityUser>(options =>
             options.SignIn.RequireConfirmedAccount = false)
             .AddEntityFrameworkStores<ApplicationDbContext>();
-        builder.Services.AddRazorPages();
 
-        //builder.Services.AddServerSideBlazor();
-        builder.Services.AddMarkdownEditor();
+        builder.Services.AddRazorPages();
+        builder.Services.AddServerSideBlazor();
+       // builder.Services.AddMarkdownEditor();
 
         builder.Services.Configure<CookiePolicyOptions>(options =>
         {
@@ -74,14 +74,20 @@ public class Program
         app.UseStaticFiles();
 
         app.UseCookiePolicy();
-        app.UseAuthentication();
 
         app.UseRouting();
 
+        app.Use(next => context =>
+        {
+            Console.WriteLine($"Found: {context.GetEndpoint()?.DisplayName}");
+            return next(context);
+        });
+
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapRazorPages();
-        //app.MapBlazorHub();
+        app.MapBlazorHub();
 
         app.Run();
     }
