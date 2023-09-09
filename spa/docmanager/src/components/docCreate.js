@@ -39,7 +39,7 @@ const DocCreate = () => {
             markdown: markdown
         });
 
-        console.log("result: ", isSucceeded, result, errorMessage);
+        //console.log("docCreate.onSave result: ", isSucceeded, result, errorMessage);
         if(!isSucceeded) {
             setMessage(errorMessage);
         }
@@ -56,13 +56,13 @@ const DocCreate = () => {
 
             <div className=''>
                 <div className='gr'>
-                    <label className='c1' for='name'>Name:</label>
+                    <label className='c1' >Name:</label>
                     <input className='c2' type='text' id='name'
                         disabled = {saved ?'disabled' : ''}
                         placeholder= {saved ?'' : 'Assign a name to this document'}
                         onChange={e => onNameChange(e)} Value={name} />
 
-                    <label className='c1' for='description'>Description:</label>
+                    <label className='c1' >Description:</label>
                     <input className='c2' type='text' id='description'
                         disabled = {saved ?'disabled' : ''}
                         placeholder= {saved ?'' : 'Assign a name to this document'}
@@ -81,7 +81,7 @@ const DocCreate = () => {
                         value={markdown}
                         onChange={setMarkdown}
                     />
-                    <MDEditor.Markdown source={markdown} style={{ whiteSpace: 'pre-wrap' }} />
+                    {/* <MDEditor.Markdown source={markdown} style={{ whiteSpace: 'pre-wrap' }} /> */}
                     </>
                 }
             </div>

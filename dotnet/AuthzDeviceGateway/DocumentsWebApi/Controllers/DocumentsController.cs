@@ -49,7 +49,7 @@ namespace DocumentsWebApi.Controllers
                 return NotFound();
             }
 
-            document = await PatchFilename(document);
+            //document = await PatchFilename(document);
             var markdown = await LoadMarkdown(document.Pathname);
             FullDocument fullDocument = new(document, markdown);
 
@@ -118,7 +118,7 @@ namespace DocumentsWebApi.Controllers
             _context.Documents.Remove(document);
             await _context.SaveChangesAsync();
 
-            await DeleteMarkdown(document.Pathname);
+            await DeleteMarkdown(document);
 
             return NoContent();
         }
@@ -141,9 +141,16 @@ namespace DocumentsWebApi.Controllers
             return content;
         }
 
-        private Task DeleteMarkdown(string filename)
+        private Task DeleteMarkdown(Document document)
         {
+            var filename = document.Pathname;
             var fullname = Path.Combine(_fullPath, filename);
+            //if (!System.IO.File.Exists(fullname))
+            //{
+            //    filename = $"Doc_{document.Id.ToString().ToLower()}";
+            //    fullname = Path.Combine(_fullPath, filename);
+            //}
+
             System.IO.File.Delete(fullname);
             return Task.CompletedTask;
         }

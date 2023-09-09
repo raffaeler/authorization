@@ -10,7 +10,7 @@ const decodeAuthError = async (response) => {
     if (!response.ok) {
         let message;
         try {
-            console.log(response);
+            console.log('decodeAuthError', response);
             var authError = response.headers.get("WWW-Authenticate");
             message = `Fetch failed with HTTP status ${response.status} ${authError}  ${await response.text()}`;
         }
@@ -75,7 +75,7 @@ export const GetDocuments = async (accessToken) => {
 }
 
 export const GetDocument = async (accessToken, id) => {
-    console.log('GetDocuments');
+    console.log('GetDocument');
     if(!accessToken) {
         return [false, null, "Not authenticated"];
     };
@@ -116,8 +116,35 @@ export const PutDocument = async (accessToken, document) => {
             })
         }
         options.body = JSON.stringify(document);
-        console.log('put id:', document.document.id);
+        //console.log('put id:', document.document.id);
         const response = await fetch("https://app.iamraf.net:5001/api/documents/" + document.document.id, options);
+        if(!response.ok) return [false, null, decodeAuthError(response)];
+
+        // PUT does not return any object
+        return [true, {}, null];
+    } catch(e) {
+        return [false, null, e];
+    }
+}
+
+export const DeleteDocument = async (accessToken, id) => {
+    console.log('DeleteDocument', id);
+    if(!accessToken) {
+        return [false, null, "Not authenticated"];
+    };
+
+    try{
+        const options = {
+            method: 'DELETE',
+            headers: new Headers({
+                //"Authorization": `Bearer ${accessToken}`,
+                "Content-Type": "application/json",
+                //"Accept": "application/json"
+            })
+        }
+
+        //console.log('delete id:', id);
+        const response = await fetch("https://app.iamraf.net:5001/api/documents/" + id, options);
         if(!response.ok) return [false, null, decodeAuthError(response)];
 
         // PUT does not return any object

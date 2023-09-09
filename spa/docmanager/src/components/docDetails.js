@@ -30,32 +30,34 @@ const DocDetails = (props) => {
         let mounted = true;
         makeGet(id).then(doc => {
             if(mounted) {
-                console.log('loaded document: ', doc)
-                setFullDocument(doc);
-                setDocument(doc.document);
-                setName(doc.document.name);
-                setDescription(doc.document.description);
-                setMarkdown(doc.markdown);
-                if(props.mode == 'edit') setIsEdit(true);
+                if(doc && doc.document) {
+                    //console.log('loaded document: ', doc)
+                    setFullDocument(doc);
+                    setDocument(doc.document);
+                    setName(doc.document.name);
+                    setDescription(doc.document.description);
+                    setMarkdown(doc.markdown);
+                    if(props.mode == 'edit') setIsEdit(true);
+                }
             }
         })
         return () => mounted = false;
     }, []);
 
     // props.mode == 'edit'
-    console.log("DocDetails with id:", id, "and props", props);
+    //console.log("DocDetails with id:", id, "and props", props);
 
     const makeGet = async (id) => {
         var [isSucceeded, result, errorMessage] = await GetDocument(accessToken, id);
 
-        console.log("result: ", isSucceeded, result, errorMessage);
+        //console.log("docDetails.makeGet result:", isSucceeded, result, errorMessage);
         if(!isSucceeded) {
-            console.log(errorMessage);
+            console.log("docDetails.makeGet result:", errorMessage);
             setMessage(errorMessage.message);
             return [];
         }
         else {
-            console.log("makeGet", result);
+            //console.log("docDetails.makeGet result:", result);
             setMessage('');
             setSaved(true);
             return result;
@@ -80,10 +82,10 @@ const DocDetails = (props) => {
         fullDocument.document.name = name;
         fullDocument.document.description = description;
         fullDocument.markdown = markdown;
-        console.log('onSave', fullDocument);
+        //console.log('docDetails.onSave', fullDocument);
         var [isSucceeded, result, errorMessage] = await PutDocument(accessToken, fullDocument);
 
-        console.log("result: ", isSucceeded, result, errorMessage);
+        //console.log('docDetails.onSave result:', isSucceeded, result, errorMessage);
         if(!isSucceeded) {
             setMessage(errorMessage);
         }
@@ -96,26 +98,26 @@ const DocDetails = (props) => {
     return (
         
         <div className='inset'>
-            <h2>Create a new document</h2>
+            <h2>Document details</h2>
 
             <div className=''>
                 <div className='gr'>
-                    <label className='c1' for='name'>Name:</label>
+                    <label className='c1' >Name:</label>
                     <input className='c2' type='text' id='name'
                         disabled = {!isEdit ?'disabled' : ''}
                         placeholder= {!isEdit ?'' : 'Assign a name to this document'}
-                        onChange={e => onNameChange(e)} Value={name} />
+                        onChange={e => onNameChange(e)} value={name} />
 
-                    <label className='c1' for='description'>Description:</label>
+                    <label className='c1' >Description:</label>
                     <input className='c2' type='text' id='description'
                         disabled = {!isEdit ?'disabled' : ''}
                         placeholder= {!isEdit ?'' : 'Assign a name to this document'}
-                        onChange={e => onDescriptionChange(e)} Value={description} />
+                        onChange={e => onDescriptionChange(e)} value={description} />
 
-                    <label className='c1' for='author'>Author:</label>
+                    <label className='c1' >Author:</label>
                     <input className='c2' type='text' id='author'
                         disabled = 'disabled'
-                        Value={document.author} />
+                        value={document != null ? document.author : ""} />
                 </div>
             </div>
             
@@ -130,7 +132,7 @@ const DocDetails = (props) => {
                         value={markdown}
                         onChange={setMarkdown}
                     />
-                    <MDEditor.Markdown source={markdown} style={{ whiteSpace: 'pre-wrap' }} />
+                    {/* <MDEditor.Markdown source={markdown} style={{ whiteSpace: 'pre-wrap' }} /> */}
                     </>
                 }
             </div>
