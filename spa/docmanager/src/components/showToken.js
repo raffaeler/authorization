@@ -51,6 +51,7 @@ function ShowToken() {
     let paccessToken = accessTokenPayload;//parseJwt(accessToken);
     let prefreshToken = {};//parseJwt(idToken);
 
+    console.log('showToken - debug');
     return (
     <>
         <JSONTree

@@ -14,27 +14,33 @@ namespace DocumentsWebApi.Controllers
     [ApiController]
     public class DocumentsController : ControllerBase
     {
+        private const string FilesFolder = "_files";
         private readonly ILogger<DocumentsController> _logger;
         private readonly DocumentsDbContext _context;
+        private string _fullPath;
 
         public DocumentsController(
-            ILogger<DocumentsController> logger, 
+            ILogger<DocumentsController> logger,
             DocumentsDbContext context)
         {
             _logger = logger;
             _context = context;
+
+            _fullPath = Path.GetFullPath(FilesFolder);
         }
 
         // GET: api/Documents
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Document>>> GetDocuments()
+        public async Task<ActionResult<IEnumerable<FullDocument>>> GetDocuments()
         {
-            return await _context.Documents.ToListAsync();
+            return await _context.Documents
+                .Select(d => new FullDocument(d, string.Empty))
+                .ToListAsync();
         }
 
         // GET: api/Documents/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Document>> GetDocument(Guid id)
+        public async Task<ActionResult<FullDocument>> GetDocument(Guid id)
         {
             var document = await _context.Documents.FindAsync(id);
 
@@ -43,24 +49,30 @@ namespace DocumentsWebApi.Controllers
                 return NotFound();
             }
 
-            return document;
+            document = await PatchFilename(document);
+            var markdown = await LoadMarkdown(document.Pathname);
+            FullDocument fullDocument = new(document, markdown);
+
+            return fullDocument;
         }
 
         // PUT: api/Documents/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDocument(Guid id, Document document)
+        public async Task<IActionResult> PutDocument(Guid id, FullDocument fullDocument)
         {
-            if (id != document.Id)
+            if (id != fullDocument.Document.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(document).State = EntityState.Modified;
+            _context.Entry(fullDocument.Document).State = EntityState.Modified;
 
             try
             {
                 await _context.SaveChangesAsync();
+
+                await SaveMarkdown(fullDocument.Document.Pathname, fullDocument.Markdown);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -80,12 +92,17 @@ namespace DocumentsWebApi.Controllers
         // POST: api/Documents
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Document>> PostDocument(Document document)
+        public async Task<ActionResult<FullDocument>> PostDocument(FullDocument fullDocument)
         {
-            _context.Documents.Add(document);
+            _context.Documents.Add(fullDocument.Document);
+            var filename = $"Doc_{fullDocument.Document.Id.ToString().ToLower()}";
+            fullDocument.Document.Pathname = filename;
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetDocument", new { id = document.Id }, document);
+            await SaveMarkdown(filename, fullDocument.Markdown);
+
+            return CreatedAtAction("GetDocument",
+                new { id = fullDocument.Document.Id }, fullDocument);
         }
 
         // DELETE: api/Documents/5
@@ -101,12 +118,57 @@ namespace DocumentsWebApi.Controllers
             _context.Documents.Remove(document);
             await _context.SaveChangesAsync();
 
+            await DeleteMarkdown(document.Pathname);
+
             return NoContent();
         }
 
         private bool DocumentExists(Guid id)
         {
             return _context.Documents.Any(e => e.Id == id);
+        }
+
+        private async Task SaveMarkdown(string filename, string content)
+        {
+            var fullname = Path.Combine(_fullPath, filename);
+            await System.IO.File.WriteAllTextAsync(fullname, content);
+        }
+
+        private async Task<string> LoadMarkdown(string filename)
+        {
+            var fullname = Path.Combine(_fullPath, filename);
+            var content = await System.IO.File.ReadAllTextAsync(fullname);
+            return content;
+        }
+
+        private Task DeleteMarkdown(string filename)
+        {
+            var fullname = Path.Combine(_fullPath, filename);
+            System.IO.File.Delete(fullname);
+            return Task.CompletedTask;
+        }
+
+        private async Task<Document> PatchFilename(Document document)
+        {
+            if (document.Pathname == "_files" || document.Pathname.StartsWith("H:"))
+            {
+                var filename = $"Doc_{document.Id.ToString().ToLower()}";
+                document.Pathname = filename;
+
+                _context.Entry(document).State = EntityState.Modified;
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return document;
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+            }
+
+            return document;
         }
     }
 }

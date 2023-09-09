@@ -4,6 +4,13 @@ import './App.css';
 import React, { useState } from 'react';
 import { Routes, Route, Outlet, Link } from "react-router-dom";
 
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
+
+import { LinkContainer } from "react-router-bootstrap";
+
 // import { BrowserRouter as Router } from 'react-router-dom';
 // import { Routes } from 'react-router-dom';
 
@@ -14,6 +21,9 @@ import { useOidcIdToken, useOidcAccessToken } from '@axa-fr/react-oidc';
 import ShowToken from './components/showToken';
 import ShowJson from './components/showJson';
 import LoginControl from './components/loginControl';
+import DocCreate from './components/docCreate';
+import DocList from './components/docList';
+import DocDetails from './components/docDetails';
 
 const acr_to_loa = Object.freeze({
   pwd: 1,
@@ -47,7 +57,7 @@ function App() {
         return;
       }
 
-      const response = await fetch("https://app.iamraf.net:5001/api/values/" + resource, {
+      const response = await fetch("https://spa.iamraf.net:5001/api/documents/" + resource, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -71,7 +81,6 @@ function App() {
         //   await login(null, {
         //     acr_values: loa
         //   });
-
         //   invokeAPI(resource, loa, false);
         //   return;
         // }
@@ -99,14 +108,47 @@ function App() {
   return (
     <Routes>
       <Route path='/' element={<Layout />}>
-        <Route index element={<Home />} />
+        <Route index element={<DocList />} />
         <Route path="debug" element={<ShowToken />} />
+        <Route path="create" element={<DocCreate />} />
+        <Route path="details/:id" element={<DocDetails />}/>
+        <Route path="edit/:id" element={<DocDetails mode='edit' />}/>
       </Route>
     </Routes>
   );
 
-
   function Layout() {
+    return (
+      <>
+      <Navbar bg="dark" data-bs-theme="dark">
+        <Container>
+          <Navbar.Brand>Documents Demo</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto container-fluid">
+              <LinkContainer to="/">
+                <Nav.Link>Home</Nav.Link>
+              </LinkContainer>
+              <LinkContainer to="/debug">
+                <Nav.Link>Debug</Nav.Link>
+              </LinkContainer>
+              <LinkContainer to="/create">
+                <Nav.Link>Create</Nav.Link>
+              </LinkContainer>
+              <Nav.Item className="ms-auto">
+                <LoginControl onLogout={loggedOut} />
+              </Nav.Item>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+
+      <Outlet />
+      </>
+    );
+  }
+
+  function Layout2() {
     return (
 
       <div>
@@ -119,6 +161,9 @@ function App() {
             </li>
             <li className="nav-li">
               <Link to="/debug">Debug</Link>
+            </li>
+            <li className="nav-li">
+              <Link to="/create">Create</Link>
             </li>
 
             <li className="nav-li lir"  ><LoginControl onLogout={loggedOut} /></li>

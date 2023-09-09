@@ -7,6 +7,8 @@ import reportWebVitals from './reportWebVitals';
 import { OidcProvider } from "@axa-fr/react-oidc";
 import { BrowserRouter } from "react-router-dom";
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 const configuration = {
   //metadataUrl: "https://kc.iamraf.net:8443/realms/Demo/.well-known/openid-configuration",
   authority: "https://kc.iamraf.net:8443/realms/Demo",

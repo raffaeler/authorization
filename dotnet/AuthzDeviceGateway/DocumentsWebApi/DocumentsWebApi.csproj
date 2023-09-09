@@ -26,4 +26,8 @@
         <ProjectReference Include="..\CommonAuth\CommonAuth.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="_files\" />
+    </ItemGroup>
+
 </Project>

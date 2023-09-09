@@ -1,3 +1,7 @@
+body {
+  font-size: large;
+}
+
 .content {
   margin-top: 60px;
   z-index:1;
@@ -120,4 +124,32 @@
 .lir {
   float: right;
   margin-right:100px;
+}
+
+
+
+.button {
+  background-color: #313749;
+  color: #FFFFFF;
+  padding: 10px;
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  margin:10px;
+  text-align: center;
+}
+
+.small-btn {
+  width: 50px;
+  height: 25px;
+}
+
+.medium-btn {
+  width: 70px;
+  height: 30px;
+}
+
+.big-btn {
+  width: 90px;
+  height: 40px;
 }
