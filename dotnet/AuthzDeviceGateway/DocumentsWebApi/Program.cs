@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 
 using CommonAuth;
 
+using DocumentsWebApi.Authorization;
 using DocumentsWebApi.Authorization.Handlers;
 using DocumentsWebApi.Authorization.Requirements;
 using DocumentsWebApi.Data;
@@ -183,6 +184,34 @@ public class Program
             //options.TokenValidationParameters.ValidateAudience = false;   // use this only to test audience issues
         });
         // === end authentication config ===
+
+
+        // === start authorization config ===
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("Documents", policy => policy.RequireClaim("Documents"));
+            options.AddPolicy(Policies.DocsList,
+                policy => policy.AddRequirements(Operations.List));
+
+            options.AddPolicy(Policies.DocsCreate,
+                policy => policy.AddRequirements(Operations.Create));
+
+            options.AddPolicy(Policies.DocsRead,
+                policy => policy.AddRequirements(Operations.Read));
+
+            options.AddPolicy(Policies.DocsUpdate,
+                policy => policy.AddRequirements(Operations.Update));
+
+            options.AddPolicy(Policies.DocsDelete,
+                policy => policy.AddRequirements(Operations.Delete));
+        });
+
+        // Forgetting to add these handlers will make the authorization fail
+        builder.Services.AddSingleton<IAuthorizationHandler, DocumentOperationAuthorizationHandler>();
+        //builder.Services.AddSingleton<IAuthorizationHandler, DocumentAuthorizationHandler>();
+        builder.Services.AddSingleton<IAuthorizationHandler, AuthorAuthorizationHandler>();
+
+        // === end authorization config ===
 
 
         var app = builder.Build();

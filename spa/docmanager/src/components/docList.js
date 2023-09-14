@@ -36,10 +36,10 @@ const DocList = () => {
     const makeGet = async () => {
         var [isSucceeded, result, errorMessage] = await GetDocuments(accessToken);
 
-        console.log("docList.makeGet result: ", isSucceeded, result, errorMessage);
+        //console.log("docList.makeGet result: ", isSucceeded, result, errorMessage);
         if (!isSucceeded) {
             console.log('docList.makeGet error:', errorMessage);
-            setMessage(errorMessage.message);
+            setMessage(errorMessage);
             return [];
         }
         else {
@@ -49,9 +49,14 @@ const DocList = () => {
     }
 
     async function onDelete(e) {
-        //console.log('docList.onDelete', e.target.id);
-        await DeleteDocument(accessToken, e.target.id);
-        //console.log('docList.makeGet', e.target.id, 'deleted');
+        console.log('docList.onDelete', e.target.id);
+        var [succeeded, res, errormsg] = await DeleteDocument(accessToken, e.target.id);
+        if(!succeeded){
+            console.log('docList.onDelete', succeeded, res, errormsg);
+            setMessage(errormsg);
+            return;
+        }
+        console.log('docList.onDelete', e.target.id, 'deleted');
         setRefresh(!refresh);
     }
 

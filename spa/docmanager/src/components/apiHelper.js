@@ -12,7 +12,9 @@ const decodeAuthError = async (response) => {
         try {
             console.log('decodeAuthError', response);
             var authError = response.headers.get("WWW-Authenticate");
-            message = `Fetch failed with HTTP status ${response.status} ${authError}  ${await response.text()}`;
+            //message = `Fetch failed with HTTP status ${response.status} ${authError}  ${await response.text()}`;
+            message = `Fetch failed with HTTP status ${response.status}`;
+            console.log('decodeAuthError', `${authError}  ${await response.text()}`)
         }
         catch (e) {
             message = `Fetch failed with HTTP status ${response.status} ${response.statusText}`;
@@ -32,7 +34,7 @@ export const PostDocument = async (accessToken, document) => {
         const options = {
             method: 'POST',
             headers: new Headers({
-                //"Authorization": `Bearer ${accessToken}`,
+                "Authorization": `Bearer ${accessToken}`,
                 "Content-Type": "application/json",
                 //"Accept": "application/json"
             })
@@ -40,7 +42,11 @@ export const PostDocument = async (accessToken, document) => {
         options.body = JSON.stringify(document);
 
         const response = await fetch("https://app.iamraf.net:5001/api/documents/", options);
-        if(!response.ok) return [false, null, decodeAuthError(response)];
+        if(!response.ok){
+            let authError = await decodeAuthError(response);
+            console.log("PostDocument.decodeAuthError", authError);
+            return [false, null, authError];
+        } 
 
         return [true, await response.json(), null];
     } catch(e) {
@@ -58,7 +64,7 @@ export const GetDocuments = async (accessToken) => {
         const options = {
             method: 'GET',
             headers: new Headers({
-                //"Authorization": `Bearer ${accessToken}`,
+                "Authorization": `Bearer ${accessToken}`,
                 "Content-Type": "application/json",
                 //"Accept": "application/json"
             })
@@ -66,8 +72,9 @@ export const GetDocuments = async (accessToken) => {
         //options.body = JSON.stringify('');
 
         const response = await fetch("https://app.iamraf.net:5001/api/documents/", options);
-        if(!response.ok) return [false, null, decodeAuthError(response)];
-
+        if(!response.ok) return [false, null, await decodeAuthError(response)];
+        
+        //console.log("getDocuments", response);
         return [true, await response.json(), null];
     } catch(e) {
         return [false, null, e];
@@ -84,7 +91,7 @@ export const GetDocument = async (accessToken, id) => {
         const options = {
             method: 'GET',
             headers: new Headers({
-                //"Authorization": `Bearer ${accessToken}`,
+                "Authorization": `Bearer ${accessToken}`,
                 "Content-Type": "application/json",
                 //"Accept": "application/json"
             })
@@ -110,7 +117,7 @@ export const PutDocument = async (accessToken, document) => {
         const options = {
             method: 'PUT',
             headers: new Headers({
-                //"Authorization": `Bearer ${accessToken}`,
+                "Authorization": `Bearer ${accessToken}`,
                 "Content-Type": "application/json",
                 //"Accept": "application/json"
             })
@@ -137,7 +144,7 @@ export const DeleteDocument = async (accessToken, id) => {
         const options = {
             method: 'DELETE',
             headers: new Headers({
-                //"Authorization": `Bearer ${accessToken}`,
+                "Authorization": `Bearer ${accessToken}`,
                 "Content-Type": "application/json",
                 //"Accept": "application/json"
             })
@@ -145,9 +152,10 @@ export const DeleteDocument = async (accessToken, id) => {
 
         //console.log('delete id:', id);
         const response = await fetch("https://app.iamraf.net:5001/api/documents/" + id, options);
-        if(!response.ok) return [false, null, decodeAuthError(response)];
+        console.log('DeleteDocument', response);
+        if(!response.ok) return [false, null, await decodeAuthError(response)];
 
-        // PUT does not return any object
+        // DELETE does not return any object
         return [true, {}, null];
     } catch(e) {
         return [false, null, e];

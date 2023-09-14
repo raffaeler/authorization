@@ -27,6 +27,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Authorization\Attributes\" />
       <Folder Include="_files\" />
     </ItemGroup>
 

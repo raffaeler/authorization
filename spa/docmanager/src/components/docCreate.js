@@ -86,7 +86,7 @@ const DocCreate = () => {
                 }
             </div>
 
-            {/* <p>{message}</p> */}
+            <p>{message}</p>
 
             <Button variant="primary"
                 className='bl'

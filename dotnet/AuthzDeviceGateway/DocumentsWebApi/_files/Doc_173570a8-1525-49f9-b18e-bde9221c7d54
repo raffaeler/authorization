@@ -1,0 +1,6 @@
+## Doc
+This is a ***formatted*** document.
+```csharp
+Console.WriteLine("with syntax coloring as well");
+yield return 1;
+```
