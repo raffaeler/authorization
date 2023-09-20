@@ -10,9 +10,9 @@ import { BrowserRouter } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const configuration = {
-  //metadataUrl: "https://kc.iamraf.net:8443/realms/Demo/.well-known/openid-configuration",
-  authority: "https://kc.iamraf.net:8443/realms/Demo",
-  client_id: "ReactApp",
+  //metadataUrl: "https://kc.iamraf.net:8443/realms/RafDocuments/.well-known/openid-configuration",
+  authority: "https://kc.iamraf.net:8443/realms/RafDocuments",
+  client_id: "DocsSpa",
   redirect_uri: window.location.origin + '/authentication/callback',
   silent_redirect_uri: window.location.origin + '/authentication/silent-callback',
   //scope: 'openid profile email api offline_access',

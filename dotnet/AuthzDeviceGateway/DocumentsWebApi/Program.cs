@@ -7,6 +7,7 @@ using CommonAuth;
 using DocumentsWebApi.Authorization;
 using DocumentsWebApi.Authorization.Handlers;
 using DocumentsWebApi.Authorization.Requirements;
+using DocumentsWebApi.Configurations;
 using DocumentsWebApi.Data;
 
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -54,6 +55,9 @@ public class Program
                     .AllowAnyMethod();
             });
         });
+
+        var documentsConfigSection = builder.Configuration.GetSection("DocumentsConfig");
+        builder.Services.Configure<DocumentsConfig>(documentsConfigSection);
 
         var authServerSection = builder.Configuration.GetSection("AuthServer");
         builder.Services.Configure<AuthServerConfiguration>(authServerSection);
@@ -157,7 +161,7 @@ public class Program
 
             options.MetadataAddress = authServerConfig.MetadataAddress;
             options.RequireHttpsMetadata = false;
-            options.Audience = "AspNetMvc";
+            options.Audience = "DocsBackend";
             options.Authority = authServerConfig.Authority;
             options.Events = new JwtBearerEvents()
             {

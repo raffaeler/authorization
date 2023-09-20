@@ -6,18 +6,14 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const trustedDomains = {
     default: [
-        "https://kc.iamraf.net:8443/realms/Demo/protocol/openid-connect/token",
-        "https://kc.iamraf.net:8443/realms/Demo/protocol/openid-connect/revoke",
-        "https://kc.iamraf.net:8443/realms/Demo/protocol/openid-connect/userinfo",
-        "https://kc.iamraf.net:8443/realms/Demo",
+        "https://kc.iamraf.net:8443/realms/RafDocuments/protocol/openid-connect/token",
+        "https://kc.iamraf.net:8443/realms/RafDocuments/protocol/openid-connect/revoke",
+        "https://kc.iamraf.net:8443/realms/RafDocuments/protocol/openid-connect/userinfo",
+        "https://kc.iamraf.net:8443/realms/RafDocuments",
         "https://spa.iamraf.net:3443/",
         "https://app.iamraf.net:5001/",
         new RegExp('^(https://[a-zA-Z0-9-]+.iamraf.net/api/)')
     ],
-    // config_classic: ['https://demo.duendesoftware.com'],
-    // config_without_silent_login: ['https://demo.duendesoftware.com'],
-    // config_without_refresh_token: ['https://demo.duendesoftware.com'],
-    // config_without_refresh_token_silent_login: ['https://demo.duendesoftware.com'],
+
     config_google: ['https://oauth2.googleapis.com', 'https://openidconnect.googleapis.com'],
-    //config_with_hash: ['https://demo.duendesoftware.com'],
 };

@@ -72,6 +72,8 @@ public class Program
         builder.Services.AddSingleton<IAuthorizationHandler, SeniorRequirementHandler>();
         builder.Services.AddSingleton<IAuthorizationHandler, SportRequirementHandler>();
 
+        builder.Services.AddSingleton<IAuthorizationHandler, JuniorRequirementHandler>();
+
         builder.Services.AddSingleton<IClaimsTransformation, CustomClaimTransformer>();
 
         var app = builder.Build();

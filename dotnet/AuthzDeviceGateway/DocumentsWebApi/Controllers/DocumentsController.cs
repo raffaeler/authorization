@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using DocumentsWebApi.Authorization;
 using System.Security.Claims;
+using Microsoft.Extensions.Options;
+using DocumentsWebApi.Configurations;
 
 namespace DocumentsWebApi.Controllers
 {
@@ -18,21 +20,24 @@ namespace DocumentsWebApi.Controllers
     [ApiController]
     public class DocumentsController : ControllerBase
     {
-        private const string FilesFolder = "_files";
         private readonly ILogger<DocumentsController> _logger;
+        private readonly DocumentsConfig _documentsConfig;
         private readonly DocumentsDbContext _context;
         private readonly IAuthorizationService _authorizationService;
         private string _fullPath;
 
         public DocumentsController(
             ILogger<DocumentsController> logger,
+            IOptions<DocumentsConfig> documentsConfig,
             DocumentsDbContext context,
             IAuthorizationService authorizationService)
         {
             _logger = logger;
+            _documentsConfig = documentsConfig.Value;
             _context = context;
             _authorizationService = authorizationService;
-            _fullPath = Path.GetFullPath(FilesFolder);
+
+            _fullPath = Path.GetFullPath(_documentsConfig.Folder);
         }
 
         // GET: api/Documents

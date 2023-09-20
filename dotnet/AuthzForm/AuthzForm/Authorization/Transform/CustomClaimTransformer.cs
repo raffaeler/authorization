@@ -37,24 +37,29 @@ public class CustomClaimTransformer : IClaimsTransformation
                 //identity.AddClaim(new Claim(ClaimTypes.DateOfBirth, new DateTime(1997, 02, 26).ToString(CultureInfo.InvariantCulture)));
 
 
+
                 identity.AddClaim(new Claim(identity.RoleClaimType, "Administrators"));
                 //identity.AddClaim(new Claim(identity.RoleClaimType, "Users"));
 
-                identity.AddClaim(new Claim(AuthorizationHelpers.DepartmentClaimType, "Developer"));
-                identity.AddClaim(new Claim(AuthorizationHelpers.YearsOfExperienceClaimType,
-                    (DateTime.Now.Year - 1987).ToString(), ClaimValueTypes.Integer));
+                identity.AddClaim(new Claim(MyClaimNames.DepartmentClaimType, "Developer"));
+                //identity.AddClaim(new Claim(MyClaimNames.YearsOfExperienceClaimType,
+                //    (DateTime.Now.Year - 1987).ToString(), ClaimValueTypes.Integer));
+                identity.AddClaim(new Claim(MyClaimNames.YearsOfExperienceClaimType,
+                    2.ToString(), ClaimValueTypes.Integer));
+                //identity.AddClaim(new Claim(MyClaimNames.YearsOfExperienceClaimType,
+                //    1.ToString(), ClaimValueTypes.Integer));
 
 
                 //identity.AddClaim(new Claim(ClaimTypes.Country, "Italy"));
                 identity.AddClaim(new Claim(ClaimTypes.Country, "Switzerland"));
 
                 // Manually adding the LinkedIn Skills
-                identity.AddClaim(new Claim("Skills", ".NET"));
-                identity.AddClaim(new Claim("Skills", "C#"));
-                identity.AddClaim(new Claim("Skills", "ASP.NET"));
-                identity.AddClaim(new Claim("Skills", "Software Architecture"));
-                identity.AddClaim(new Claim("Skills", "Digital Hardware"));
-                identity.AddClaim(new Claim("Skills", "IoT"));
+                identity.AddClaim(new Claim(MyClaimNames.Skills, ".NET"));
+                identity.AddClaim(new Claim(MyClaimNames.Skills, "C#"));
+                identity.AddClaim(new Claim(MyClaimNames.Skills, "ASP.NET"));
+                identity.AddClaim(new Claim(MyClaimNames.Skills, "Software Architecture"));
+                identity.AddClaim(new Claim(MyClaimNames.Skills, "Digital Hardware"));
+                identity.AddClaim(new Claim(MyClaimNames.Skills, "IoT"));
 
                 AuthorInfo authorInfo = new(
                     Books: new[]
@@ -69,7 +74,7 @@ public class CustomClaimTransformer : IClaimsTransformation
                     });
 
                 var json = JsonSerializer.Serialize(authorInfo);
-                identity.AddClaim(new Claim(nameof(AuthorInfo), json, "JSON"));
+                identity.AddClaim(new Claim(MyClaimNames.AuthorInfo, json, "JSON"));
                 break;
         }
     }

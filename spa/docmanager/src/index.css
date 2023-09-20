@@ -24,7 +24,7 @@ code {
 
 .gr {
   display: grid;
-  grid-template-columns: 10% auto auto;
+  grid-template-columns: auto auto auto auto;
   grid-template-rows: repeat(auto-fill);
   /* width: fit-content; */
 

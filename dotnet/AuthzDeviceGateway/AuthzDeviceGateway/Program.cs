@@ -144,7 +144,7 @@ public class Program
 
             options.MetadataAddress = authServerConfig.MetadataAddress;
             options.RequireHttpsMetadata = false;
-            options.Audience = "AspNetMvc";
+            options.Audience = "DocsBackend";
             options.Authority = authServerConfig.Authority;
             options.Events = new JwtBearerEvents()
             {

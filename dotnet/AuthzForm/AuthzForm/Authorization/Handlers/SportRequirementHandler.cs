@@ -15,7 +15,7 @@ public class SportRequirementHandler : AuthorizationHandler<SportRequirement>
         AuthorizationHandlerContext context, SportRequirement requirement)
     {
         var authorInfoClaim = context.User.Claims
-            .FirstOrDefault(c => c.Type == nameof(AuthorInfo));
+            .FirstOrDefault(c => c.Type == MyClaimNames.AuthorInfo);
         if(authorInfoClaim == null) return Task.CompletedTask;
 
         var authorInfo = JsonSerializer.Deserialize<AuthorInfo>(authorInfoClaim.Value);

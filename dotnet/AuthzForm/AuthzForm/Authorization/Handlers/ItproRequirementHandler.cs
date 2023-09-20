@@ -11,7 +11,7 @@ public class ItproRequirementHandler : AuthorizationHandler<TechStaffRequirement
         AuthorizationHandlerContext context, TechStaffRequirement requirement)
     {
         var isItpro = context.User.Claims
-            .Any(c => c.Type == AuthorizationHelpers.DepartmentClaimType &&
+            .Any(c => c.Type == MyClaimNames.DepartmentClaimType &&
                 string.Compare(c.Value, "Itpro",
                     StringComparison.InvariantCultureIgnoreCase) == 0);
 
