@@ -13,7 +13,7 @@ public class DeveloperRequirementHandler : AuthorizationHandler<TechStaffRequire
     {
         var isDeveloper = context.User.Claims
             .Any(c => c.Type == AuthorizationHelpers.DepartmentClaimType &&
-                string.Compare(c.Value, "Developers",
+                string.Compare(c.Value, "Developer",
                     StringComparison.InvariantCultureIgnoreCase) == 0);
 
         if (isDeveloper) context.Succeed(requirement);

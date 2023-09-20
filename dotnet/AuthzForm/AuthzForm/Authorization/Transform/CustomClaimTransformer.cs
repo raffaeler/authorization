@@ -40,7 +40,7 @@ public class CustomClaimTransformer : IClaimsTransformation
                 identity.AddClaim(new Claim(identity.RoleClaimType, "Administrators"));
                 //identity.AddClaim(new Claim(identity.RoleClaimType, "Users"));
 
-                identity.AddClaim(new Claim(AuthorizationHelpers.DepartmentClaimType, "Developers"));
+                identity.AddClaim(new Claim(AuthorizationHelpers.DepartmentClaimType, "Developer"));
                 identity.AddClaim(new Claim(AuthorizationHelpers.YearsOfExperienceClaimType,
                     (DateTime.Now.Year - 1987).ToString(), ClaimValueTypes.Integer));
 
@@ -57,11 +57,16 @@ public class CustomClaimTransformer : IClaimsTransformation
                 identity.AddClaim(new Claim("Skills", "IoT"));
 
                 AuthorInfo authorInfo = new(
-                    new[]
+                    Books: new[]
                     {
                         new Book("Elettronica Applicata", "xyz"),
                         new Book("C# Programming", "xyz"),
-                    }, new[] { "Run", "Swim" });
+                    },
+                    Sports: new[]
+                    {
+                        "Run",
+                        "Swim" 
+                    });
 
                 var json = JsonSerializer.Serialize(authorInfo);
                 identity.AddClaim(new Claim(nameof(AuthorInfo), json, "JSON"));

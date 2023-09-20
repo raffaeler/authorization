@@ -14,7 +14,6 @@ public class SeniorRequirementHandler : AuthorizationHandler<SeniorRequirement>
         var yearsOfExperience = context.User.Claims
             .FirstOrDefault(c => c.Type == AuthorizationHelpers.YearsOfExperienceClaimType &&
                 c.ValueType == ClaimValueTypes.Integer);
-
         if (yearsOfExperience == null) return Task.CompletedTask;
 
         // exception in parsing will make this requirement fail
