@@ -44,6 +44,9 @@ public class Program
             options.MinimumSameSitePolicy = SameSiteMode.None;
         });
 
+        // provides access to IHttpContextAccessor in DI
+        builder.Services.AddHttpContextAccessor();
+
         builder.Services.AddAuthorization(options =>
         {
             // frites = france + italy + spain
@@ -74,7 +77,11 @@ public class Program
 
         builder.Services.AddSingleton<IAuthorizationHandler, JuniorRequirementHandler>();
 
-        builder.Services.AddSingleton<IClaimsTransformation, CustomClaimTransformer>();
+        // There can't be multiple IClaimsTransformation registered (last wins)
+        //builder.Services.AddSingleton<IClaimsTransformation, CustomClaimTransformer>();
+
+        builder.Services.AddSingleton<CustomClaimTransformer>();
+        builder.Services.AddScoped<IClaimsTransformation, MultipleIdentitiesTransformer>();
 
         var app = builder.Build();
 
@@ -86,7 +93,6 @@ public class Program
         else
         {
             app.UseExceptionHandler("/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
 
