@@ -22,22 +22,62 @@ code {
   margin-bottom: 10px;
 }
 
+.b2 {
+  margin-left: 10px;
+}
+
+input:disabled {
+  border: 0px;
+  background-color: transparent;
+}
+
+.label {
+  font-weight: bold;
+}
+
 .gr {
   display: grid;
-  grid-template-columns: auto auto auto auto;
+  grid-template-columns: auto auto auto auto auto;
   grid-template-rows: repeat(auto-fill);
+  width:auto;
   /* width: fit-content; */
 
   column-gap: 12px;
 }
 
+.gr3 {
+  display: grid;
+  grid-template-columns: 20% 40% auto;
+  grid-template-rows: repeat(auto-fill);
+  width:auto;
+  /* width: fit-content; */
+
+  column-gap: 12px;
+}
+
+.gr5 {
+  display: grid;
+  grid-template-columns: 19% 5% 5% 5% auto;
+  grid-template-rows: repeat(auto-fill);
+  justify-items: center;
+  width:auto;
+  /* width: fit-content; */
+
+  column-gap: 12px;
+}
+
+
 /*.r1 { grid-row: 1; }
 .r2 { grid-row: 2; }
 .r3 { grid-row: 3; }*/
 
+.error {
+  color: red;
+}
 .c1 {
   grid-column: 1;
   margin-bottom: 5px;
+  justify-self: left;
 }
 
 .c2 {
@@ -51,6 +91,11 @@ code {
 }
 .c4 {
   grid-column: 4;
+  margin-bottom: 5px;
+}
+
+.c5 {
+  grid-column: 5;
   margin-bottom: 5px;
 }
 

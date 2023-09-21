@@ -80,6 +80,13 @@ const DocList = () => {
         );
     }
 
+    const renderEffective = (item) => {
+        //console.log('docList.renderActions', item.document.id);
+        return (
+            <span style={{color: 'lightgrey'}}>{item.effectivePermissions}</span>
+        );
+    }
+
     // </> is a shortcut for <React.Fragment />
     const renderTemplate = (item) => {
         return (
@@ -91,6 +98,9 @@ const DocList = () => {
                 <div className='c3' id='author'>{item.document.author}</div>
                 <div className='c4' id='actions'>
                     {renderActions(item)}
+                </div>
+                <div className='c5' id='effective'>
+                    {renderEffective(item)}
                 </div>
             </React.Fragment>
         )
@@ -106,7 +116,7 @@ const DocList = () => {
                     <label className='c2' >Description</label>
                     <label className='c3' >Author</label>
                     <label className='c4' >Actions</label>
-
+                    <label className='c5' >Effective</label>
 
                     {documents.map(element => renderTemplate(element))}
 

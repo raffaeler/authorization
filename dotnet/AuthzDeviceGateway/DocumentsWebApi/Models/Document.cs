@@ -24,4 +24,6 @@ public record Document
     public string Pathname { get; set; }
 
     public string Author { get; set; }
+
+    public ICollection<Share> Shares { get; set; } = new List<Share>();
 }

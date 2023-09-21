@@ -14,4 +14,5 @@ public class DocumentsDbContext : DbContext
 	}
 
     public DbSet<Document> Documents { get; set; } = default!;
+    public DbSet<Share> Shares { get; set; } = default!;
 }
