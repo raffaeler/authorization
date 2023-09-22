@@ -1,4 +1,9 @@
-using AuthzDeviceGateway.Policies;
+using System.Diagnostics;
+using System.IdentityModel.Tokens.Jwt;
+
+using AuthzDeviceGateway.Authorization;
+using AuthzDeviceGateway.Configuration;
+using AuthzDeviceGateway.Data;
 
 using CommonAuth;
 
@@ -7,9 +12,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
-
-using System.Diagnostics;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace AuthzDeviceGateway;
 
@@ -40,19 +42,24 @@ public class Program
         builder.Services.Configure<AuthServerConfiguration>(authServerSection);
         var authServerConfig = authServerSection.Get<AuthServerConfiguration>();
 
+        var repositoryConfigSection = builder.Configuration.GetSection("Repository");
+        builder.Services.Configure<RepositoryConfiguration>(repositoryConfigSection);
+
+        builder.Services.AddSingleton<IRepository, Repository>();
+
         // === Start authorization config ===
         // HttpContextAccessor is needed to access HttpContext from the requirement handler
         builder.Services.AddHttpContextAccessor();
-        builder.Services.AddAuthorization(options =>
+        builder.Services.AddAuthorization(c =>
         {
-            options.AddPolicy("mfa",
-                policy => policy.Requirements.Add(new OtpRequirement("mfa")));
+            c.AddPolicy("mfa", bld => bld.Requirements.Add(new OtpRequirement("mfa")));
+            c.AddPolicy("hwk", bld => bld.Requirements.Add(new OtpRequirement("hwk")));
 
-            options.AddPolicy("hwk",
-                policy => policy.Requirements.Add(new OtpRequirement("hwk")));
+            //c.AddPolicy(Policies.DeviceAdmin, bld => bld.Requirements.Add(new )
         });
 
         builder.Services.AddScoped<IAuthorizationHandler, OtpRequirementHandler>();
+        builder.Services.AddScoped<IAuthorizationHandler, DeviceConfigureAuthorizationHandler>();
         // === End authorization config ===
 
         // === start authentication config ===
@@ -69,10 +76,18 @@ public class Program
             OnRedirectToIdentityProvider = ctx =>
             {
                 // specify additional parameters here
-                if (ctx.HttpContext.Items.TryGetValue("acr", out object? value))
+                if (ctx.HttpContext.Items.TryGetValue("acr", out object? acrValue))
                 {
-                    var acr = value as string ?? string.Empty;  // "mfa"
+                    var acr = acrValue as string ?? string.Empty;  // "mfa"
                     ctx.ProtocolMessage.SetParameter("acr_values", acr);
+                }
+
+                if (ctx.HttpContext.Items.TryGetValue(
+                    AuthorizationHelper.ScopesKey,
+                    out object? scopesValue))
+                {
+                    var scopes = scopesValue as string[] ?? Array.Empty<string>();
+                    ctx.ProtocolMessage.Scope += " " + string.Join(" ", scopes);
                 }
 
                 return Task.CompletedTask;
@@ -129,7 +144,7 @@ public class Program
 
             options.MetadataAddress = authServerConfig.MetadataAddress;
             options.RequireHttpsMetadata = false;
-            options.Audience = "AspNetMvc";
+            options.Audience = "DocsBackend";
             options.Authority = authServerConfig.Authority;
             options.Events = new JwtBearerEvents()
             {

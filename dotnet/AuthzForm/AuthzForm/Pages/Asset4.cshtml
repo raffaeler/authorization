@@ -1,0 +1,13 @@
+﻿@page
+@model AuthzForm.Pages.Asset4Model
+@{
+}
+
+<h2>This page is accessible only from the <strong>senior</strong> technical staff</h2>
+
+@{
+    if(Model.IsSportActive)
+    {
+        <p>You may be interested in our sporting items</p>
+    }
+}

@@ -1,0 +1,13 @@
+﻿@page
+@model AuthzForm.Pages.Asset5Model
+@{
+}
+
+<h2>This page is accessible only from the <strong>junior</strong> technical staff</h2>
+
+@{
+    if (Model.IsFirstYear)
+    {
+        <p>Hey welcome, you are at your first year!</p>
+    }
+}

@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Principal;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CommonAuth;
 
@@ -109,10 +110,15 @@ public static class KeycloakServiceExtensions
     }
 
     public static ChallengeResult SignIn(this ControllerBase controller,
-        AuthServerConfiguration authServerConfiguration)
+        AuthServerConfiguration authServerConfiguration,
+        params string[] scopes)
     {
         var signInPath = new PathString(authServerConfiguration.SignInPath);
-        return controller.Challenge(new AuthenticationProperties() { RedirectUri = signInPath },
+        var props = new AuthenticationProperties();
+        props.RedirectUri = signInPath;
+        controller.HttpContext.Items["scopes"] = scopes;
+
+        return controller.Challenge(props,
             OpenIdConnectDefaults.AuthenticationScheme);//,
                                                         //CookieAuthenticationDefaults.AuthenticationScheme);
     }
@@ -121,17 +127,25 @@ public static class KeycloakServiceExtensions
         AuthServerConfiguration authServerConfiguration)
     {
         var signOutPath = new PathString(authServerConfiguration.SignOutPath);
-        return controller.SignOut(new AuthenticationProperties() { RedirectUri = signOutPath },
+        var props = new AuthenticationProperties();
+        props.RedirectUri = signOutPath;
+
+        return controller.SignOut(props,
             OpenIdConnectDefaults.AuthenticationScheme,
             CookieAuthenticationDefaults.AuthenticationScheme);
     }
 
     public static ChallengeResult SignIn(
         this Microsoft.AspNetCore.Mvc.RazorPages.PageModel pageModel,
-        AuthServerConfiguration authServerConfiguration)
+        AuthServerConfiguration authServerConfiguration,
+        params string[] scopes)
     {
         var signInPath = new PathString(authServerConfiguration.SignInPath);
-        return pageModel.Challenge(new AuthenticationProperties() { RedirectUri = signInPath },
+        var props = new AuthenticationProperties();
+        props.RedirectUri = signInPath;
+        pageModel.HttpContext.Items["scopes"] = scopes;
+
+        return pageModel.Challenge(props,
             OpenIdConnectDefaults.AuthenticationScheme);
             // CookieAuthenticationDefaults.AuthenticationScheme);
     }
@@ -141,8 +155,10 @@ public static class KeycloakServiceExtensions
         AuthServerConfiguration authServerConfiguration)
     {
         var signOutPath = new PathString(authServerConfiguration.SignOutPath);
-        return pageModel.SignOut(new AuthenticationProperties()
-            { RedirectUri = signOutPath },
+        var props = new AuthenticationProperties();
+        props.RedirectUri = signOutPath;
+
+        return pageModel.SignOut(props,
             OpenIdConnectDefaults.AuthenticationScheme,
             CookieAuthenticationDefaults.AuthenticationScheme);
     }

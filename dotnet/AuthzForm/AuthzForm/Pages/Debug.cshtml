@@ -1,0 +1,52 @@
+﻿@page
+@model AuthzForm.Pages.DebugModel
+@{
+    var isAuthenticated = User.Identity?.IsAuthenticated ?? false;
+    var userName = User.Identity?.Name ?? "guest";
+}
+
+<h2>Debug</h2>
+<p>Username: @userName</p>
+
+@{
+    if (isAuthenticated)
+    {
+        <h2>Principal view</h2>
+        <div class='gr'>
+            <div class="c1"><span><strong>Claim Name</strong></span></div>
+            <div class="c2"><span><strong>Value Type</strong></span></div>
+            <div class="c3"><span><strong>Value</strong></span></div>
+            @foreach (var claim in User.Claims)
+            {
+                <div class="c1"><span>@claim.Type</span></div>
+                <div class="c2"><span>@claim.ValueType</span></div>
+                <div class="c3"><span>@claim.Value</span></div>
+            }
+        </div>
+
+        <p></p>
+        
+        <h2>Identities View</h2>
+        @foreach(var identity in User.Identities)
+        {
+            <h5>@identity.Name</h5>
+
+            <div class='gr'>
+                <div class="c1"><span><strong>Claim Name</strong></span></div>
+                <div class="c2"><span><strong>Value Type</strong></span></div>
+                <div class="c3"><span><strong>Value</strong></span></div>
+                @foreach (var claim in identity.Claims)
+                {
+                    <div class="c1"><span>@claim.Type</span></div>
+                    <div class="c2"><span>@claim.ValueType</span></div>
+                    <div class="c3"><span>@claim.Value</span></div>
+                }
+            </div>
+            <p></p>
+        }
+
+        <p></p>
+
+    }
+
+}

@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34004.107
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthzForm", "AuthzForm\AuthzForm.csproj", "{2FC053D6-AB3F-4FE7-9B14-993E4AABAB30}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthzDocuments", "AuthzDocuments\AuthzDocuments.csproj", "{AD711BFE-995F-4315-BD70-ED17C3FB3795}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2FC053D6-AB3F-4FE7-9B14-993E4AABAB30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FC053D6-AB3F-4FE7-9B14-993E4AABAB30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FC053D6-AB3F-4FE7-9B14-993E4AABAB30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FC053D6-AB3F-4FE7-9B14-993E4AABAB30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD711BFE-995F-4315-BD70-ED17C3FB3795}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD711BFE-995F-4315-BD70-ED17C3FB3795}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD711BFE-995F-4315-BD70-ED17C3FB3795}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD711BFE-995F-4315-BD70-ED17C3FB3795}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F0D882D0-02B5-4684-84E8-F8ADF33CD729}
+	EndGlobalSection
+EndGlobal
