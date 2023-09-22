@@ -19,9 +19,6 @@ public class DocumentOperationAuthorizationHandler :
         AuthorizationHandlerContext context,
         OperationAuthorizationRequirement requirement)
     {
-        //context.Succeed(requirement);
-        //return Task.CompletedTask;
-
         var documentOperationClaim = context.User.Claims
             .FirstOrDefault(c => c.Type == ClaimNames.DocsLcrud);
 

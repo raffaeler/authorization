@@ -193,21 +193,25 @@ public class Program
         // === start authorization config ===
         builder.Services.AddAuthorization(options =>
         {
-            options.AddPolicy("Documents", policy => policy.RequireClaim("Documents"));
+            //options.AddPolicy("Documents", policy => policy.RequireClaim("Documents"));
+
+            // The following are the only permissions that do not require
+            // a reference to a specific document to be actioned
+            // These permissions tell whether a user can list documents or create new ones
+            // Please not that list means seeing the properties but not the document content
+            //
+            // Instead for Read, Update and Delete the operations can be:
+            // - specific to a given document (authors can always modify her own documents)
+            // - traversal (admins can always delete any document)
             options.AddPolicy(Policies.DocsList,
                 policy => policy.AddRequirements(Operations.List));
 
             options.AddPolicy(Policies.DocsCreate,
                 policy => policy.AddRequirements(Operations.Create));
 
-            options.AddPolicy(Policies.DocsRead,
-                policy => policy.AddRequirements(Operations.Read));
-
-            options.AddPolicy(Policies.DocsUpdate,
-                policy => policy.AddRequirements(Operations.Update));
-
-            options.AddPolicy(Policies.DocsDelete,
-                policy => policy.AddRequirements(Operations.Delete));
+            // Starting from .NET 8, we can avoid declaring the policies here
+            // and enforce their requirements inside a AuthorizaAttribute
+            // using IAuthorizationRequirementData
         });
 
         // Forgetting to add these handlers will make the authorization fail

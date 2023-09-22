@@ -3,4 +3,4 @@
 public record FullDocument(
     Document Document,
     string Markdown,
-    string EffectivePermissions);
+    string? EffectivePermissions);

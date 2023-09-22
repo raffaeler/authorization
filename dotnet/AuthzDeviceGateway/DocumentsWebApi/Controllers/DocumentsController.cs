@@ -43,18 +43,14 @@ public class DocumentsController : ControllerBase
 
     // GET: api/Documents
     [HttpGet]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme
-        //, Policy = Policies.DocsList  // not-templated => always fails
-        )]
+    [Authorize(
+        AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+        Policy = Policies.DocsList)]
     public async Task<ActionResult<IEnumerable<FullDocument>>> GetDocuments()
     {
-        var authResult = await _authorizationService.AuthorizeAsync(User,
-            //Policies.DocsList); // not-templated => always fails
-            Document.Empty, Operations.List);
-        if (!authResult.Succeeded)
-        {
-            return Unauthorized();
-        }
+        // Alternative to the Authorize attribute
+        //var authResult = await _authorizationService.AuthorizeAsync(User, null, Policies.DocsList);
+        //if (!authResult.Succeeded) return Unauthorized();
 
         List<FullDocument> result = new();
         foreach (var doc in _context.Documents.Include(x => x.Shares))
@@ -65,10 +61,6 @@ public class DocumentsController : ControllerBase
         }
 
         return result;
-
-        //return await _context.Documents
-        //    .Select(d => new FullDocument(d, string.Empty, string.Empty))
-        //    .ToListAsync();
     }
 
     // GET: api/Documents/5
@@ -92,7 +84,6 @@ public class DocumentsController : ControllerBase
             return Unauthorized();
         }
 
-        //document = await PatchFilename(document);
         var markdown = await LoadMarkdown(document.Pathname);
         var effectivePermissions = await GetEffectivePermissions(document);
         FullDocument fullDocument = new(document, markdown, effectivePermissions);
@@ -197,7 +188,8 @@ public class DocumentsController : ControllerBase
     // POST: api/Documents
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
+    [Authorize(
+        AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,
         Policy = Policies.DocsCreate)]
     public async Task<ActionResult<FullDocument>> PostDocument(FullDocument fullDocument)
     {
@@ -276,37 +268,8 @@ public class DocumentsController : ControllerBase
     {
         var filename = document.Pathname;
         var fullname = Path.Combine(_fullPath, filename);
-        //if (!System.IO.File.Exists(fullname))
-        //{
-        //    filename = $"Doc_{document.Id.ToString().ToLower()}";
-        //    fullname = Path.Combine(_fullPath, filename);
-        //}
-
         System.IO.File.Delete(fullname);
         return Task.CompletedTask;
-    }
-
-    private async Task<Document> PatchFilename(Document document)
-    {
-        if (document.Pathname == "_files" || document.Pathname.StartsWith("H:"))
-        {
-            var filename = $"Doc_{document.Id.ToString().ToLower()}";
-            document.Pathname = filename;
-
-            _context.Entry(document).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-                return document;
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-        }
-
-        return document;
     }
 
 
