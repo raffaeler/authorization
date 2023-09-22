@@ -5,9 +5,9 @@ const DocShare = ({ share, isEdit, onSaveShare, onDeleteShare }) => {
     const [id] = React.useState(share.id);
     const [username, setUsername] = React.useState(share.username);
     const [permissionSet, setPermissionSet] = React.useState(share.permissionSet);
-    const [read, setRead] = React.useState(share.permissionSet.includes('R'));
-    const [update, setUpdate] = React.useState(share.permissionSet.includes('U'));
-    const [del, setDel] = React.useState(share.permissionSet.includes('D'));
+    const [read, setRead] = React.useState(share?.permissionSet?.includes('R'));
+    const [update, setUpdate] = React.useState(share?.permissionSet?.includes('U'));
+    const [del, setDel] = React.useState(share?.permissionSet?.includes('D'));
     const [isEmailValid, setIsEmailValid] = React.useState(validateEmail(share.username));
 
     useEffect(() => {
@@ -51,6 +51,7 @@ const DocShare = ({ share, isEdit, onSaveShare, onDeleteShare }) => {
             <input className={isEmailValid ? 'c1' : 'c1 error'} type='text'
                 disabled={!isEdit ? 'disabled' : ''}
                 defaultValue={share != null ? share.username : ""}
+                placeholder= {!isEdit ?'' : 'Email of the user to share with'}
                 onChange={e => setUsername(e.target.value)} />
 
             {/* <input className='c2' type='text' id='permissionSet'

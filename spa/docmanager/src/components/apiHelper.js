@@ -99,7 +99,7 @@ export const GetDocument = async (accessToken, id) => {
         //options.body = JSON.stringify('');
 
         const response = await fetch("https://app.iamraf.net:5001/api/documents/" + id, options);
-        if(!response.ok) return [false, null, decodeAuthError(response)];
+        if(!response.ok) return [false, null, await decodeAuthError(response)];
 
         return [true, await response.json(), null];
     } catch(e) {
@@ -125,7 +125,7 @@ export const PutDocument = async (accessToken, document) => {
         options.body = JSON.stringify(document);
         //console.log('put id:', document.document.id);
         const response = await fetch("https://app.iamraf.net:5001/api/documents/" + document.document.id, options);
-        if(!response.ok) return [false, null, decodeAuthError(response)];
+        if(!response.ok) return [false, null, await decodeAuthError(response)];
 
         // PUT does not return any object
         return [true, {}, null];

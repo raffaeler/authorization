@@ -13,7 +13,7 @@ const DocCreate = () => {
     //const { idToken, idTokenPayload } = useOidcIdToken();
     const { accessToken, accessTokenPayload } = useOidcAccessToken();
 
-    const [markdown, setMarkdown] = React.useState("## Hello world!!!");
+    const [markdown, setMarkdown] = React.useState("");
 
     const [name, setName] = React.useState('');
     const [description, setDescription] = React.useState('');

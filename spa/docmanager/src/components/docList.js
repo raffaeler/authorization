@@ -14,7 +14,7 @@ const DocList = () => {
     //const { idToken, idTokenPayload } = useOidcIdToken();
     const { accessToken, accessTokenPayload } = useOidcAccessToken();
 
-    const [markdown, setMarkdown] = React.useState("## Hello world!!!");
+    const [markdown, setMarkdown] = React.useState("");
 
     const [documents, setDocuments] = React.useState([]);
 

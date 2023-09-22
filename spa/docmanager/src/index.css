@@ -78,6 +78,7 @@ input:disabled {
   grid-column: 1;
   margin-bottom: 5px;
   justify-self: left;
+  width: 100%;
 }
 
 .c2 {

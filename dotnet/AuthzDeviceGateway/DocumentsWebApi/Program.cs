@@ -212,8 +212,8 @@ public class Program
 
         // Forgetting to add these handlers will make the authorization fail
         builder.Services.AddSingleton<IAuthorizationHandler, DocumentOperationAuthorizationHandler>();
-        //builder.Services.AddSingleton<IAuthorizationHandler, DocumentAuthorizationHandler>();
         builder.Services.AddSingleton<IAuthorizationHandler, AuthorAuthorizationHandler>();
+        builder.Services.AddSingleton<IAuthorizationHandler, InvitedAuthorizationHandler>();
 
         // === end authorization config ===
 

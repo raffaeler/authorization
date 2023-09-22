@@ -57,7 +57,7 @@ public class DocumentsController : ControllerBase
         }
 
         List<FullDocument> result = new();
-        foreach (var doc in _context.Documents)
+        foreach (var doc in _context.Documents.Include(x => x.Shares))
         {
             var effectivePermissions = await GetEffectivePermissions(doc);
             var fullDocument = new FullDocument(doc, string.Empty, effectivePermissions);
@@ -128,11 +128,42 @@ public class DocumentsController : ControllerBase
             return Unauthorized();
         }
 
-        var currentShares = current.Shares.ToList();
+        // modify the db with new, modified and deleted shares
+        SynchronizeShares(current, fullDocument.Document);
 
-        foreach (var share in fullDocument.Document.Shares)
+        // we only copy the modifiable data in the current document
+        current.Name = fullDocument.Document.Name;
+        current.Description = fullDocument.Document.Description;
+        _context.Entry(current).State = EntityState.Modified;
+
+        try
         {
-            share.DocumentId = fullDocument.Document.Id;
+            await _context.SaveChangesAsync();
+
+            await SaveMarkdown(fullDocument.Document.Pathname, fullDocument.Markdown);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!DocumentExists(id))
+            {
+                return NotFound();
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        return NoContent();
+    }
+
+    private void SynchronizeShares(Document dbDocument, Document newDocument)
+    {
+        var currentShares = dbDocument.Shares.ToList();
+
+        foreach (var share in newDocument.Shares)
+        {
+            share.DocumentId = newDocument.Id;
             if (share.Id == Guid.Empty)
             {
                 share.Id = Guid.NewGuid();
@@ -161,32 +192,6 @@ public class DocumentsController : ControllerBase
         {
             _context.Entry(currentShare).State = EntityState.Deleted;
         }
-
-        // we only copy the modifiable data in the current document
-        current.Name = fullDocument.Document.Name;
-        current.Description = fullDocument.Document.Name;
-
-        _context.Entry(current).State = EntityState.Modified;
-
-        try
-        {
-            await _context.SaveChangesAsync();
-
-            await SaveMarkdown(fullDocument.Document.Pathname, fullDocument.Markdown);
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!DocumentExists(id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
-        }
-
-        return NoContent();
     }
 
     // POST: api/Documents
@@ -219,7 +224,11 @@ public class DocumentsController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> DeleteDocument(Guid id)
     {
-        var document = await _context.Documents.FindAsync(id);
+        //var document = await _context.Documents.FindAsync(id);
+        var document = await _context.Documents
+            .Include(x => x.Shares)
+            .FirstOrDefaultAsync(d => d.Id == id);
+
         if (document == null)
         {
             return NotFound();
@@ -233,6 +242,11 @@ public class DocumentsController : ControllerBase
         }
 
         _context.Documents.Remove(document);
+        foreach (var share in document.Shares)
+        {
+            _context.Shares.Remove(share);
+        }
+
         await _context.SaveChangesAsync();
 
         await DeleteMarkdown(document);

@@ -29,7 +29,7 @@ public class DocumentOperationAuthorizationHandler :
         {
             var user = context.User;
 
-            var operations = GetAllowedOperations(documentOperationClaim);
+            var operations = Operations.GetAllowedOperations(documentOperationClaim.Value);
             if (operations.Contains(requirement))
             {
                 _logger.LogInformation($"Requirement succeeded - User:{user}");
@@ -44,32 +44,4 @@ public class DocumentOperationAuthorizationHandler :
         return Task.CompletedTask;
     }
 
-    private IEnumerable<OperationAuthorizationRequirement> GetAllowedOperations(Claim documentOperationClaim)
-    {
-        var result = new List<OperationAuthorizationRequirement>();
-        var value = documentOperationClaim.Value;
-
-        if (value.Contains('L'))
-        {
-            result.Add(Operations.List);
-        }
-        if (value.Contains('C'))
-        {
-            result.Add(Operations.Create);
-        }
-        if (value.Contains('R'))
-        {
-            result.Add(Operations.Read);
-        }
-        if (value.Contains('U'))
-        {
-            result.Add(Operations.Update);
-        }
-        if (value.Contains('D'))
-        {
-            result.Add(Operations.Delete);
-        }
-
-        return result;
-    }
 }
