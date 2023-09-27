@@ -11,7 +11,7 @@ It contains three projects for two different demos:
 
 The `AuthzForm` project is straightforward and can be run from Visual Studio.
 
-The other demo requires `Keycloak` container. The instructions to configure a running instance of `Keycloak` can be found in the `DocumentsWebApi` folder in the `docs-demo-config.md` document.
+The other demo requires `Keycloak` container. The instructions to configure a running instance of `Keycloak` can be found in the [`docs-demo-config.md`](https://github.com/raffaeler/authorization/blob/main/dotnet/DocumentsDemo/DocumentsWebApi/docs-demo-config.md) document.
 
 ### Important note
 
@@ -20,21 +20,6 @@ You can easily adapt the authorization code to any other identity providers. Aut
 
 
 If you have any questions about this code and on the talk, please open an issue in this repository.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
