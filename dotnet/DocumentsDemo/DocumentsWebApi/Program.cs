@@ -31,18 +31,16 @@ public class Program
         var corsPolicy = "MyCorsPolicy";
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
-
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
         builder.Services.AddDbContext<DocumentsDbContext>(options =>
             options.UseSqlite(connectionString));
 
-
         builder.Services.AddControllers();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+        // configuring cors to run the react application from the developer prompt
+        // this is not needed when hosting the react application from this .NET app
         builder.Services.AddCors(options =>
         {
             options.AddPolicy(corsPolicy, policy =>
@@ -64,20 +62,6 @@ public class Program
         var authServerConfig = authServerSection.Get<AuthServerConfiguration>();
         if (authServerConfig == null)
             throw new Exception($"Missing AuthServer configuration");
-
-        // === Start authorization config ===
-        // HttpContextAccessor is needed to access HttpContext from the requirement handler
-        builder.Services.AddHttpContextAccessor();
-        builder.Services.AddAuthorization(c =>
-        {
-            c.AddPolicy("mfa", bld => bld.Requirements.Add(new OtpRequirement("mfa")));
-            c.AddPolicy("hwk", bld => bld.Requirements.Add(new OtpRequirement("hwk")));
-
-            //c.AddPolicy(Policies.DeviceAdmin, bld => bld.Requirements.Add(new )
-        });
-
-        builder.Services.AddScoped<IAuthorizationHandler, OtpRequirementHandler>();
-        // === End authorization config ===
 
         // === start authentication config ===
         builder.Services.AddAuthentication(options =>
@@ -190,14 +174,37 @@ public class Program
         // === end authentication config ===
 
 
-        // === start authorization config ===
+        // === Start authorization config ===
+        // HttpContextAccessor is needed to access HttpContext from the requirement handler
+        builder.Services.AddHttpContextAccessor();
+
         builder.Services.AddAuthorization(options =>
         {
-            //options.AddPolicy("Documents", policy => policy.RequireClaim("Documents"));
+            // ==============================================================
+            // Starting from .NET 8, we can avoid declaring the policies here
+            // and enforce their requirements inside a AuthorizaAttribute
+            // using IAuthorizationRequirementData
+            // You can see this technique in action in the Authz project
+            // ==============================================================
 
-            // The following are the only permissions that do not require
+
+            // ==============================================================
+            // These are the policies used for the step-up authentication:
+            // mfa and hwk are arbitrary names shared with the client and the IP (Keycloak)
+            // "pwd" is the default => level 1 => password
+            // "mfa" => level 2 => OTP (Google authenticator)
+            // "hwk" => level 3 => USB hardware key
+            // The following are the policy and requirements that can be requested
+            // by the actions in the controller (they are currently not used anyway)
+            options.AddPolicy("mfa", bld => bld.Requirements.Add(new OtpRequirement("mfa")));
+            options.AddPolicy("hwk", bld => bld.Requirements.Add(new OtpRequirement("hwk")));
+            // ==============================================================
+
+
+            // ==============================================================
+            // The following are the only requirements that do not require
             // a reference to a specific document to be actioned
-            // These permissions tell whether a user can list documents or create new ones
+            // These requirements tell whether a user can list documents or create new ones
             // Please not that list means seeing the properties but not the document content
             //
             // Instead for Read, Update and Delete the operations can be:
@@ -208,10 +215,7 @@ public class Program
 
             options.AddPolicy(Policies.DocsCreate,
                 policy => policy.AddRequirements(Operations.Create));
-
-            // Starting from .NET 8, we can avoid declaring the policies here
-            // and enforce their requirements inside a AuthorizaAttribute
-            // using IAuthorizationRequirementData
+            // ==============================================================
         });
 
         // Forgetting to add these handlers will make the authorization fail
@@ -219,6 +223,7 @@ public class Program
         builder.Services.AddSingleton<IAuthorizationHandler, AuthorAuthorizationHandler>();
         builder.Services.AddSingleton<IAuthorizationHandler, InvitedAuthorizationHandler>();
 
+        builder.Services.AddScoped<IAuthorizationHandler, OtpRequirementHandler>();
         // === end authorization config ===
 
 
@@ -236,9 +241,7 @@ public class Program
 
         app.UseAuthorization();
 
-
         app.MapControllers();
-
         app.Run();
     }
 

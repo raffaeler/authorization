@@ -147,10 +147,11 @@ const DocDetails = (props) => {
 
     const onSaveShare = (share) => {
         //console.log('onSaveShare', share);
-        var index = shares.findIndex(e => e.id === share.id);
+        let newShares = [...shares];
+        var index = newShares.findIndex(e => e.id === share.id);
         if (index >= 0) {
-            shares[index] = share;
-            setShares(shares);
+            newShares[index] = share;
+            setShares(newShares);
             //console.log("share updated: ", share)
         }
     }
@@ -204,12 +205,13 @@ const DocDetails = (props) => {
                 </div>
             </div>
 
-            {document?.shares?.length > 0 ? renderShares() : null}
+            {shares?.length > 0 ? renderShares() : null}
 
             <div className="bl">
                 {!isEdit ?
                     <div style={{ padding: 20, background: 'whitesmoke' }}>
-                        <ReactMarkdown children={markdown} />
+                        {/* <ReactMarkdown children={markdown} /> */}
+                        <MDEditor.Markdown source={markdown} />
                     </div>
                     : <>
                         <MDEditor

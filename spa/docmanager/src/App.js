@@ -39,6 +39,8 @@ function App() {
   const [result, setResult] = useState("");
   const [isError, setIsError] = useState(true);
 
+  console.log("Dump environment variables", process.env);
+
   const invokeAPI = async (resource, requested_loa, previousInvocationOk = true) => {
     try {
       console.log(`requesting ${resource} with loa:${requested_loa}`)

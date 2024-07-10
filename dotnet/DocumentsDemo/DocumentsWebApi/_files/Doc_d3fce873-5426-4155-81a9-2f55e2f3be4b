@@ -1,0 +1,46 @@
+# Functions-en1 on 25-Sep-23 12:54:48
+
+## Settings
+
+| Azure                 | OAI               | Value                   | Default |
+| --------------------- | ----------------- | ----------------------- | ------- |
+| Model                 | model             | gpt-35-turbo-16k-EastUS | ---     |
+| Index                 | ---               |                         | ---     |
+| Temperature           | temperature       | 0.85                    | 1.0     |
+| MaxTokens             | max_tokens        | 500                     | inf     |
+| NucleusSamplingFactor | top_p             |                         | 1.0     |
+| ChoiceCount           | n                 |                         | 1       |
+| FrequencyPenalty      | frequency_penalty |                         | 0       |
+| PresencePenalty       | presence_penalty  |                         | 0       |
+
+
+## System message
+
+```
+(none)
+```
+
+## Conversation
+
+#### user
+
+What's the weather like in Genova right now?
+
+#### function (in)
+
+GetCurrentWeather({
+  "location": "Genova"
+})
+
+> Tokens used. Completion:16 + Prompt:84 = Total:100
+
+#### function (out)
+
+{"temperature":"19.0","unit":"celsius","description":"Partly cloudy"})
+
+#### assistant
+
+The weather in Genova right now is partly cloudy with a temperature of 19.0 degrees Celsius.
+
+> Tokens used. Completion:22 + Prompt:107 = Total:129
+

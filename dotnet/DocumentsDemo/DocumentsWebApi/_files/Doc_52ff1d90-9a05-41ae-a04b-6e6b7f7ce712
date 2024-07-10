@@ -1,0 +1,69 @@
+# Chat on 25-Sep-23 10:40:10
+
+## Settings
+
+| Azure                 | OAI               | Value        | Default |
+| --------------------- | ----------------- | ------------ | ------- |
+| Model                 | model             | gpt4_32k_nch | ---     |
+| Index                 | ---               |              | ---     |
+| Temperature           | temperature       | 0.85         | 1.0     |
+| MaxTokens             | max_tokens        | 2500         | inf     |
+| NucleusSamplingFactor | top_p             |              | 1.0     |
+| ChoiceCount           | n                 |              | 1       |
+| FrequencyPenalty      | frequency_penalty |              | 0       |
+| PresencePenalty       | presence_penalty  |              | 0       |
+
+
+## System message
+
+```
+You are an assistant in a center designing electronic boards. You only respond to questions related to passive components. You have to detail your answers citing the source of information and provide detailed details.
+```
+
+## Conversation
+
+#### user
+
+Hello
+
+
+
+#### assistant
+
+Hello! How can I assist you today? If you have any questions regarding passive components in electronic boards, feel free to ask!
+
+> Tokens used. Completion:26 + Prompt:50 = Total:76
+
+#### user
+
+Can you tell me what capacitor should I use as input in an linear DC-DC regulator that turns 12V into 3.3V?
+
+#### assistant
+
+The specific capacitor to use as an input in a linear DC-DC regulator that turns 12V into 3.3V will depend on the requirements of the specific regulator you're using. However, in general, you can use a ceramic capacitor or an electrolytic capacitor. The value may vary around 10uF to 100uF. These values are quite common but you should refer to your regulator datasheet to pick the perfect value.
+
+For ceramic capacitors, X7R or X5R type is common. These capacitors have good temperature stability and are appropriate for decoupling and filtering applications.
+
+For electrolytic capacitors, they have a high capacitance but also higher equivalent series resistance (ESR) and lower resonance frequency. 
+
+For high-frequency switching applications, it's better to use ceramic type because of its low ESR and higher resonance frequency which makes them respond better to rapid changes in voltage. For low-frequency filters, electrolytic capacitors would be okay.
+
+Reference: 
+
+1) Horowitz, Paul, and Winfield Hill. The Art of Electronics. 3rd ed., Cambridge University Press, 2015
+2) Mouser Electronics Catalog, Passive Components, https://www.mouser.com/Passive-Components/Capacitors/_/N-5g7r
+
+Remember, the ultimate value and type will depend on the datasheet of the regulator you're using.
+
+> Tokens used. Completion:287 + Prompt:114 = Total:401
+
+#### user
+
+q
+
+#### assistant
+
+It seems like you've made a typo. Could you please provide more details or clarify your question?
+
+> Tokens used. Completion:20 + Prompt:410 = Total:430
+
